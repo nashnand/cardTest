@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <img class="image-spacing"
+        src="https://assets-global.website-files.com/616c7256b52c543a920623bd/616c77c52eb4041cc8c2ce33_solid-logo-white-darkbg.png"
+        alt="" width="90">
+    <img class="image-spacing" src="assets\visa-icon.svg" alt="" width="90">
+    <title>Test Card Transaction</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #000000;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            margin-top: 50px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        span {
+            margin-right: 80px;
+            text-align: right;
+            font-weight: bold;
+            color: #868282;
+            position: absolute;
+            padding-top: 50px;
+            right: 0;
+        }
+
+        h3 {
+            color: #efefef;
+            margin-top: 0;
+            margin-bottom: 14px;
+            font-family: Georama, sans-serif;
+            font-size: 28px;
+            font-weight: 500;
+            line-height: 36px;
+        }
+
+        #responseContainer {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-family: 'Roboto', sans-serif;
+            background-color: #4576d1;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            background-image: url(../../assets/images.png);
+            background-repeat: no-repeat;
+            /* background-attachment: fixed; */
+            background-size: cover;
+        }
+    </style>
+    <style type="text/css">
+        .image-spacing {
+            margin-left: 10px;
+            margin-top: 10px;
+        }
+
+        .text-spacing {
+            margin-right: 10px;
+        }
+
+        .text-style {
+            color: #000000;
+            margin-bottom: 24px;
+            font-family: Manrope, sans-serif;
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 24px;
+        }
+
+        .mySeparator {
+            height: 0.5px;
+            width: 80%;
+            background-color: whitesmoke;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="h3">
+            <h4 style="color:#0b55c4;">Card Testing</h4>
+            <div class="text-style">
+                <p>You can create cards and simulate card transactions in Solid's TEST mode.<br>
+                    This allows you to test your cards before you go LIVE without making actual money transactions.
+                    Follow
+                    these steps:<br>
+                <div><img
+                        src="https://assets-global.website-files.com/616c7256b52c543a920623bd/65607830c8960f851b6d02ce_check_small.svg"
+                        class="text-spacing">
+                    Create a Card <br>
+                </div>
+                <div><img
+                        src="https://assets-global.website-files.com/616c7256b52c543a920623bd/65607830c8960f851b6d02ce_check_small.svg"
+                        class="text-spacing">
+                    Test a Card transaction by passing the cardId,test amount<br>
+                </div>
+                Transaction Response Code "00" Success response code indicates that the test transaction was
+                posted.<br><br>
+                <hr class="mySeparator">
+                <b>Request with AuthUpdate, Reversal, OR Refund (Pass parentTxnId-ProcessorLifeCycleID &
+                    ProcessorTransactionId)<b><br>
+                        </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 style="color:#0b55c4;">
+            Test Card Transaction
+        </h2>
+        <form id="transactionForm">
+            <div class="form-group">
+                <label for="txnType">Transaction Type:</label>
+                <select class="form-control" id="txnType">
+                    <option value="auth">Authorization</option>
+                    <option value="authUpdate">Authorization Update</option>
+                    <option value="refund">Refund</option>
+                    <option value="reversal">Reversal</option>
+                    <option value="balanceInquiry">BalanceInquiry</option>
+                </select>
+            </div>
+            <div class="form-group" id="cardIdInput">
+                <label for="cardId">Card ID:</label>
+                <input type="text" class="form-control" id="cardId">
+            </div>
+            <div class="form-group" id="amountInput">
+                <label for="amount">Amount:</label>
+                <input type="text" class="form-control" id="amount">
+            </div>
+            <div class="form-group" id="processorInput" style="display: none;">
+                <label for="processorTransactionId">Parent Processor Transaction ID:</label>
+                <input type="text" class="form-control" id="processorTransactionId">
+            </div>
+            <div class="form-group" id="processorLifeCycleIdInput" style="display: none;">
+                <label for="processorLifeCycleId">Parent Processor LifeCycle ID:</label>
+                <input type="text" class="form-control" id="processorLifeCycleId">
+            </div>
+            <!-- <button type="button" class="btn btn-primary" onclick="sendTransaction()">Send</button> -->
+            <button type="button" class="btn btn-primary" id="buttonSendTransaction">Send</button>
+        </form>
+    </div></b>
+
+
+    <div id="responseContainer" class="container" style="display: none;">
+        <h3>Transaction Response</h3>
+        <p id="responseText"></p>
+    </div>
+
+    <script>
+        document.getElementById('txnType').addEventListener('change', function () {
+            var txnType = this.value;
+            if (txnType === 'auth') {
+                // For "auth" transaction type, show card ID and amount inputs
+                document.getElementById('cardIdInput').style.display = 'block';
+                document.getElementById('amountInput').style.display = 'block';
+                // Hide processor transaction ID and processor life cycle ID inputs
+                document.getElementById('processorInput').style.display = 'none';
+                document.getElementById('processorLifeCycleIdInput').style.display = 'none';
+            } else if (txnType === 'balanceInquiry') {
+                // For "auth" transaction type, show card ID and amount inputs
+                document.getElementById('cardIdInput').style.display = 'block';
+                // Hide amount,processor transaction ID and processor life cycle ID inputs
+                document.getElementById('amountInput').style.display = 'none';
+                document.getElementById('processorInput').style.display = 'none';
+                document.getElementById('processorLifeCycleIdInput').style.display = 'none';
+            } else if (txnType === 'authUpdate') {
+                // For "auth" transaction type, show card ID and amount inputs
+                document.getElementById('cardIdInput').style.display = 'block';
+                // Hide amount,processor transaction ID and processor life cycle ID inputs
+                document.getElementById('amountInput').style.display = 'block';
+                document.getElementById('processorInput').style.display = 'block';
+                document.getElementById('processorLifeCycleIdInput').style.display = 'block';
+            }
+            else {
+                // For other transaction types, show processor transaction ID and processor life cycle ID inputs
+                document.getElementById('cardIdInput').style.display = 'block';
+                document.getElementById('amountInput').style.display = 'block'; // Keep amount input visible for all types
+                document.getElementById('processorInput').style.display = 'block';
+                document.getElementById('processorLifeCycleIdInput').style.display = 'block';
+            }
+        }); 
+    </script>
+    <!-- Bootstrap JS (Optional) -->
+    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> -->
+    <script src="./js/main.js" type="module"></script>
+
+</body>
+<span class="span">&#169 2024 Solid Financial Technologies, Inc.</span>
+
+</html>
