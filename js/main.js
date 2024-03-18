@@ -26,8 +26,9 @@ function generateRandomAlphaNumeric(length) {
 function showErrorPopup(message) {
     alert(message); // Display error message in a popup
 }
-async function sendTransaction() {
+function sendTransaction() {
     var selectedTransactionType = document.getElementById('txnType').value;
+    var selectedEnvironment = document.getElementById('environment').value;
 
 
     // Below Mandatory Check for InputField
@@ -60,8 +61,21 @@ async function sendTransaction() {
         }
     }
 
+    var BaseUrl;
     // Setting Up the BaseURL
-    var BaseUrl = "https://qa-api.sbx.solidfi.com/v1"
+    switch (selectedEnvironment) {
+        case "Dev":
+            BaseUrl="https://dev-api.sbx.solidfi.com/v1";
+            break;
+        case "QA":
+            BaseUrl = "https://qa-api.sbx.solidfi.com/v1";
+            break;
+        case "Staging":
+            BaseUrl = "https://staging-api.sbx.solidfi.com/v1";
+            break;
+        case "ProdTest":
+            BaseUrl = "https://test-api.solidfi.com/v1";
+
     var apiUrl;
     console.log(selectedTransactionType);
     switch (selectedTransactionType) {

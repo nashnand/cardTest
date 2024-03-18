@@ -64,9 +64,9 @@
         }
 
         body {
-            background-image: url(./assets/images.png);
+            background-image: url(assets/images.png);
             background-repeat: no-repeat;
-            /* background-attachment: fixed; */
+            background-attachment: fixed;
             background-size: cover;
         }
     </style>
@@ -131,6 +131,15 @@
             Test Card Transaction
         </h2>
         <form id="transactionForm">
+            <div class="form-group">
+                <label for="environment">Environment:</label>
+                <select class="form-control" id="environment">
+                    <option value="Dev">Dev</option>
+                    <option value="QA">QA</option>
+                    <option value="Staging">Staging</option>
+                    <option value="ProdTest">ProdTest</option>
+                </select>
+            </div>
             <div class="form-group">
                 <label for="txnType">Transaction Type:</label>
                 <select class="form-control" id="txnType">
