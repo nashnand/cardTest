@@ -29,15 +29,21 @@ async function sendTransaction() {
     var selectedTransactionType = document.getElementById('txnType').value;
     var selectedEnvironment = document.getElementById('environment').value;
 
+    // Regular expression pattern for the cardId format
+     var pattern = /^v-[a-zA-Z0-9]{3}-[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}$/;
 
     // Below Mandatory Check for InputField
     if (selectedTransactionType == "auth") {
         var amount = document.getElementById('amount').value;
         var cardId = document.getElementById('cardId').value;
-        // Check if amount and card ID are not empty
+        //Check if amount and card ID are not empty
         if (amount.trim() === '' || cardId.trim() === '') {
             showErrorPopup('Please fill in all mandatory fields (Amount and Card Number).');
             return; // Prevent form submission if mandatory fields are empty
+        }
+        if (!pattern.test(cardId)) {
+            alert('Please enter a valid cardId in the format v-xxx-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+            return; // Prevent further execution of the function
         }
     }
     else if (selectedTransactionType == "balanceInquiry") {
@@ -46,6 +52,10 @@ async function sendTransaction() {
         if (cardId.trim() === '') {
             showErrorPopup('Please fill in all mandatory fields (Card Number).');
             return; // Prevent form submission if mandatory fields are empty
+        }
+        if (!pattern.test(cardId)) {
+            alert('Please enter a valid cardId in the format v-xxx-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+            return; // Prevent further execution of the function
         }
     }
     else {
@@ -57,6 +67,10 @@ async function sendTransaction() {
         if (amount.trim() === '' || cardId.trim() === '' || processorTransactionId.trim() === '' || processorLifeCycleId.trim() === '') {
             showErrorPopup('Please fill in all mandatory fields (Amount , Card Number , ParentProcessorTransactionId and ParentProcessorLifeCycleId ).');
             return; // Prevent form submission if mandatory fields are empty
+        }
+        if (!pattern.test(cardId)) {
+            alert('Please enter a valid cardId in the format v-xxx-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+            return; // Prevent further execution of the function
         }
     }
 
