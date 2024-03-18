@@ -152,11 +152,11 @@
             </div>
             <div class="form-group" id="cardIdInput">
                 <label for="cardId">Card ID:</label>
-                <input type="text" class="form-control" id="cardId">
+                <input type="text" class="form-control" id="cardId" placeholder="e.g., v-xxx-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
             </div>
             <div class="form-group" id="amountInput">
                 <label for="amount">Amount:</label>
-                <input type="text" class="form-control" id="amount">
+                <input type="text" class="form-control" id="amount" placeholder="e.g., 1.00">
             </div>
             <div class="form-group" id="processorInput" style="display: none;">
                 <label for="processorTransactionId">Parent Processor Transaction ID:</label>
@@ -209,7 +209,7 @@
                 document.getElementById('processorInput').style.display = 'block';
                 document.getElementById('processorLifeCycleIdInput').style.display = 'block';
             }
-        }); 
+        });
     </script>
     <!-- Bootstrap JS (Optional) -->
     <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> -->
