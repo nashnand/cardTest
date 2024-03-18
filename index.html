@@ -117,7 +117,9 @@
                     Test a Card transaction by passing the cardId,test amount<br>
                 </div>
                 Transaction Response Code "00" Success response code indicates that the test transaction was
-                posted.<br><br>
+                posted.<br>
+                Copy processorTransactionId & processorLifeCycleId from Authorization transaction response and pass it as Parent processorTransactionId
+                & processorLifeCycleId for AuthUpdate,Reversal or Refund.<br><br>
                 <hr class="mySeparator">
                 <b>Request with AuthUpdate, Reversal, OR Refund (Pass parentTxnId-ProcessorLifeCycleID &
                     ProcessorTransactionId)<b><br>
@@ -152,7 +154,8 @@
             </div>
             <div class="form-group" id="cardIdInput">
                 <label for="cardId">Card ID:</label>
-                <input type="text" class="form-control" id="cardId" placeholder="e.g., v-xxx-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+                <input type="text" class="form-control" id="cardId"
+                    placeholder="e.g., v-xxx-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
             </div>
             <div class="form-group" id="amountInput">
                 <label for="amount">Amount:</label>
@@ -170,7 +173,6 @@
             <button type="button" class="btn btn-primary" id="buttonSendTransaction">Send</button>
         </form>
     </div></b>
-
 
     <div id="responseContainer" class="container" style="display: none;">
         <h3>Transaction Response</h3>
