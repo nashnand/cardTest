@@ -66,7 +66,7 @@ async function sendTransaction() {
     console.log(selectedEnvironment);
     switch (selectedEnvironment) {
         case "Dev":
-            BaseUrl="https://dev-api.sbx.solidfi.com/v1";
+            BaseUrl = "https://dev-api.sbx.solidfi.com/v1";
             break;
         case "QA":
             BaseUrl = "https://qa-api.sbx.solidfi.com/v1";
@@ -109,7 +109,7 @@ async function sendTransaction() {
             apiUrl = "/visadps/inquiries";
             break;
     }
- 
+
     //PAYLOAD DATA
     var balanceInquirydata = {
         Hdr: {
@@ -754,6 +754,8 @@ async function sendTransaction() {
         if (xhr.readyState === 4 && xhr.status === 200) {
             var response = JSON.parse(xhr.responseText);
             displayResponse(response);
+        } else {
+            displayErrorResponse(xhr.status);
         }
     };
     //Pass the RequestPayload based on TxnType
@@ -776,12 +778,25 @@ function displayResponse(response) {
 
     if (document.getElementById('txnType').value == "balanceInquiry") {
         console.log(document.getElementById('txnType').value)
-        responseText += "Available Balance: " + response.Body.Tx.AcctBal[0].Bal[0].Amt + " USD"+"<br>";
+        responseText += "Available Balance: " + response.Body.Tx.AcctBal[0].Bal[0].Amt + " USD" + "<br>";
     }
     else {
         responseText += "ProcessorTransactionId: " + generatedProcessorTransactionId + "<br>";
         responseText += "ProcessorLifeCycleId: " + generatedProcessorLifeCycleId + "<br>";
     }
     document.getElementById('responseText').innerHTML = responseText;
+    document.getElementById('responseContainer').style.display = 'block';
+}
+
+
+// DISPLAY Error FUNCTION
+function displayErrorResponse(status) {
+    // Display error response in the response container
+    if (status == 500)
+        var errorText = "Error: Internal Server Error (500)";
+    else
+        var errorText = "Error: " + status;
+
+    document.getElementById('responseText').innerHTML = errorText;
     document.getElementById('responseContainer').style.display = 'block';
 }
