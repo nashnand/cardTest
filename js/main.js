@@ -1,10 +1,7 @@
 (function onLoad() {
     // set a function for each button
     setButtonFunctions();
-
-    // fetch from each API when the page loads
     generateRandomAlphaNumeric();
-    sendTransaction();
     displayResponse();
 })();
 
@@ -26,6 +23,8 @@ function generateRandomAlphaNumeric(length) {
 function showErrorPopup(message) {
     alert(message); // Display error message in a popup
 }
+
+
 async function sendTransaction() {
     var selectedTransactionType = document.getElementById('txnType').value;
     var selectedEnvironment = document.getElementById('environment').value;
