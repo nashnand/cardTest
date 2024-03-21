@@ -2,7 +2,7 @@
 // import { userName,password } from './config.js';
 
 //  import 'dotenv/config'
-console.log(process.env)
+
 
 document.addEventListener("DOMContentLoaded", function() {
     console.log("inside dom");
