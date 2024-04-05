@@ -122,7 +122,7 @@
                 & processorLifeCycleId for AuthUpdate,Reversal or Refund.<br><br>
                 <hr class="mySeparator">
                 <b>Request with AuthUpdate, Reversal, OR Refund (Pass parentTxnId-ProcessorLifeCycleID &
-                    ProcessorTransactionId)<b><br>
+                    ProcessorTransactionId)</b><br>
                         </p>
             </div>
         </div>
@@ -137,7 +137,7 @@
                 <label for="environment">Environment:</label>
                 <select class="form-control" id="environment">
                     <option value="Dev">Dev</option>
-                    <option value="QA">QA</option>
+                    <option value="QA"  selected=true >QA</option>
                     <option value="Staging">Staging</option>
                     <option value="ProdTest">ProdTest</option>
                 </select>
@@ -169,6 +169,34 @@
                 <label for="processorLifeCycleId">Parent Processor LifeCycle ID:</label>
                 <input type="text" class="form-control" id="processorLifeCycleId">
             </div>
+            <div class="form-group" id="MCCInput">
+                <label for="MCC">MCC:</label>
+                <input type="text" class="form-control" id="MCC" placeholder="Optional">
+            </div>
+            <div class="form-group" id="MerchantNameInput">
+                <label for="MerchantName">MerchantName:</label>
+                <input type="text" class="form-control" id="MerchantName" placeholder="Optional">
+            </div>
+            <div class="form-group" id="MerchantCityInput">
+                <label for="MerchantCity">MerchantCity:</label>
+                <input type="text" class="form-control" id="MerchantCity" placeholder="Optional">
+            </div>
+            <div class="form-group" id="MerchantStateInput" >
+                <label for="MerchantState">MerchantState(2Digit):</label>
+                <input type="text" class="form-control" id="MerchantState" placeholder="Optional" maxlength="2"  oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '');">
+            </div>
+            <div class="form-group" id="MerchantCountry2DigitInput">
+                <label for="MerchantCountry2Digit">MerchantCountry(2Digit):</label>
+                <input type="text" class="form-control" id="MerchantCountry2Digit" placeholder="Optional" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+            </div>
+            <div class="form-group" id="MerchantPostalCodeInput">
+                <label for="MerchantPostalCode">MerchantPostalCode:</label>
+                <input type="text" class="form-control" id="MerchantPostalCode" placeholder="Optional" maxlength="9" oninput="this.value = this.value.replace(/[^0-9-]/g, '');">
+            </div>
+            <div class="form-group" id="MerchantCountry3DigitInput">
+                <label for="MerchantCountry3Digit">MerchantCountry(3Digit):</label>
+                <input type="text" class="form-control" id="MerchantCountry3Digit" placeholder="Optional" maxlength="3"  oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '');">
+            </div>
             <!-- <button type="button" class="btn btn-primary" onclick="sendTransaction()">Send</button> -->
             <button type="button" class="btn btn-primary" id="buttonSendTransaction">Send</button>
         </form>
@@ -186,6 +214,13 @@
                 // For "auth" transaction type, show card ID and amount inputs
                 document.getElementById('cardIdInput').style.display = 'block';
                 document.getElementById('amountInput').style.display = 'block';
+                document.getElementById('MCCInput').style.display = 'block';
+                document.getElementById('MerchantNameInput').style.display = 'block';
+                document.getElementById('MerchantCityInput').style.display = 'block';
+                document.getElementById('MerchantStateInput').style.display = 'block';
+                document.getElementById('MerchantCountry2DigitInput').style.display = 'block';
+                document.getElementById('MerchantPostalCodeInput').style.display = 'block';
+                document.getElementById('MerchantCountry3DigitInput').style.display = 'block';
                 // Hide processor transaction ID and processor life cycle ID inputs
                 document.getElementById('processorInput').style.display = 'none';
                 document.getElementById('processorLifeCycleIdInput').style.display = 'none';
@@ -196,13 +231,27 @@
                 document.getElementById('amountInput').style.display = 'none';
                 document.getElementById('processorInput').style.display = 'none';
                 document.getElementById('processorLifeCycleIdInput').style.display = 'none';
+                document.getElementById('MCCInput').style.display = 'none';
+                document.getElementById('MerchantNameInput').style.display = 'none';
+                document.getElementById('MerchantCityInput').style.display = 'none';
+                document.getElementById('MerchantStateInput').style.display = 'none';
+                document.getElementById('MerchantCountry2DigitInput').style.display = 'none';
+                document.getElementById('MerchantPostalCodeInput').style.display = 'none';
+                document.getElementById('MerchantCountry3DigitInput').style.display = 'none';
             } else if (txnType === 'authUpdate') {
                 // For "auth" transaction type, show card ID and amount inputs
                 document.getElementById('cardIdInput').style.display = 'block';
-                // Hide amount,processor transaction ID and processor life cycle ID inputs
                 document.getElementById('amountInput').style.display = 'block';
                 document.getElementById('processorInput').style.display = 'block';
                 document.getElementById('processorLifeCycleIdInput').style.display = 'block';
+                // Hide Merchant details
+                document.getElementById('MCCInput').style.display = 'none';
+                document.getElementById('MerchantNameInput').style.display = 'none';
+                document.getElementById('MerchantCityInput').style.display = 'none';
+                document.getElementById('MerchantStateInput').style.display = 'none';
+                document.getElementById('MerchantCountry2DigitInput').style.display = 'none';
+                document.getElementById('MerchantPostalCodeInput').style.display = 'none';
+                document.getElementById('MerchantCountry3DigitInput').style.display = 'none';
             }
             else {
                 // For other transaction types, show processor transaction ID and processor life cycle ID inputs
@@ -210,6 +259,13 @@
                 document.getElementById('amountInput').style.display = 'block'; // Keep amount input visible for all types
                 document.getElementById('processorInput').style.display = 'block';
                 document.getElementById('processorLifeCycleIdInput').style.display = 'block';
+                document.getElementById('MCCInput').style.display = 'none';
+                document.getElementById('MerchantNameInput').style.display = 'none';
+                document.getElementById('MerchantCityInput').style.display = 'none';
+                document.getElementById('MerchantStateInput').style.display = 'none';
+                document.getElementById('MerchantCountry2DigitInput').style.display = 'none';
+                document.getElementById('MerchantPostalCodeInput').style.display = 'none';
+                document.getElementById('MerchantCountry3DigitInput').style.display = 'none';
             }
         });
     </script>
@@ -218,6 +274,6 @@
     <script src="./js/main.js" type="module"></script>
 
 </body>
-<span class="span">&#169 2024 Solid Financial Technologies, Inc.</span>
+<span class="span">&copy; 2024 Solid Financial Technologies, Inc.</span>
 
 </html>

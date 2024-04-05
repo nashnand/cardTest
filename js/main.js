@@ -2,7 +2,8 @@
     // set a function for each button
     setButtonFunctions();
     generateRandomAlphaNumeric();
-    displayResponse();
+    // displayResponse();
+    addSpaces();
 })();
 
 function setButtonFunctions() {
@@ -11,6 +12,10 @@ function setButtonFunctions() {
 
 var generatedProcessorTransactionId = "";
 var generatedProcessorLifeCycleId = "";
+       
+var MerchantName="";
+var MerchantCity="";
+var MerchantPostalCode="";
 
 function generateRandomAlphaNumeric(length) {
     var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -24,10 +29,24 @@ function showErrorPopup(message) {
     alert(message); // Display error message in a popup
 }
 
+function addSpaces(inputString, spacesToAdd) {
+    spacesToAdd= spacesToAdd - inputString.length;
+    return inputString + " ".repeat(spacesToAdd);
+}
 
 async function sendTransaction() {
     var selectedTransactionType = document.getElementById('txnType').value;
     var selectedEnvironment = document.getElementById('environment').value;
+
+           //Merchant Details 
+           var MCC = document.getElementById('MCC').value;
+           var inputMerchantName = document.getElementById('MerchantName').value;
+           console.log(inputMerchantName);
+           var inputMerchantCity = document.getElementById('MerchantCity').value;
+           var MerchantState = document.getElementById('MerchantState').value;
+           var MerchantCountry2Digit = document.getElementById('MerchantCountry2Digit').value;
+           var inputMerchantPostalCode = document.getElementById('MerchantPostalCode').value;
+           var MerchantCountry3Digit = document.getElementById('MerchantCountry3Digit').value;
 
     // Regular expression pattern for the cardId format
      var pattern = /^v-[a-zA-Z0-9]{3}-[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}$/;
@@ -36,6 +55,42 @@ async function sendTransaction() {
     if (selectedTransactionType == "auth") {
         var amount = document.getElementById('amount').value;
         var cardId = document.getElementById('cardId').value;
+
+        if (MCC.trim() === "")
+        {MCC="5942";}
+        
+        if (inputMerchantName.trim() === ""){
+        MerchantName="BUCKS OF STAR TEA      "}
+        else{
+            var desiredLength = 23;
+            MerchantName = addSpaces(inputMerchantName, desiredLength);
+        }
+
+        if (inputMerchantCity.trim() === ""){
+        MerchantCity="DENVER       ";}
+        else{
+        var desiredLength = 13;
+        MerchantCity = addSpaces(inputMerchantCity, desiredLength);
+       }
+
+        if (MerchantState.trim() === ""){
+        MerchantState="CO";}
+
+        if (MerchantCountry2Digit.trim() === ""){
+        MerchantCountry2Digit="US";}
+
+        if (inputMerchantPostalCode.trim() === ""){
+        MerchantPostalCode="98109    ";}
+        else{
+        var desiredLength = 9;
+        MerchantPostalCode = addSpaces(inputMerchantPostalCode, desiredLength);
+        }
+        if (MerchantCountry3Digit.trim() === ""){
+        MerchantCountry3Digit="USA";
+        }
+
+        var MerchantLocation=MerchantName+MerchantCity+MerchantState+MerchantCountry2Digit;
+        console.log('MerchantLocation:', MerchantLocation);
         //Check if amount and card ID are not empty
         if (amount.trim() === '' || cardId.trim() === '') {
             showErrorPopup('Please fill in all mandatory fields (Amount and Card Number).');
@@ -335,7 +390,7 @@ async function sendTransaction() {
                         Dt: new Date().toISOString(),
                         Id: "VISAInternational"
                     },
-                    MrchntCtgyCd: "5942",
+                    MrchntCtgyCd: MCC,
                     SttlmSvc: {
                         SttlmSvcApld: {
                             Tp: "VISAInternational"
@@ -351,11 +406,11 @@ async function sendTransaction() {
             },
             Envt: {
                 Accptr: {
-                    NmAndLctn: "AMZN Mktp US           Amzn.com/billWAUS",
+                    NmAndLctn: MerchantLocation,
                     Adr: {
-                        Ctry: "USA",
+                        Ctry: MerchantCountry3Digit,
                         CtrySubDvsnMjr: "53",
-                        PstlCd: "98109    "
+                        PstlCd: MerchantPostalCode
                     },
                     Id: "235251000762203"
                 },
