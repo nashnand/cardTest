@@ -36,8 +36,9 @@
 
         h2 {
             text-align: center;
-            font-weight: bold;
+            /* font-weight: bold; */
             color: #ffffff;
+            font-family: "Times New Roman", Times, serif;
         }
 
         span {
@@ -117,13 +118,27 @@
             padding-top: 0;
             padding-bottom: 0
         }
+
+        .line_header {
+            margin-top: 2rem;
+            border: 0;
+            border-top: 2px solid #177ddc;
+            background-color: transparent;
+            opacity: .5;
+        }
+
+        .article__header{
+            width: 64px;
+            height: 64px;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
         <div class="h3">
-            <h4 style="color:#177ddc;">Card Testing</h4>
+            <img src="assets\card.jpg" alt="" width="60" height="60">
+            <h4  style="color:#00112c;">Card Testing</h4>
             <div class="text-style">
                 <p>You can create cards and simulate card transactions in Solid's TEST mode.<br>
                     This allows you to test your cards before you go LIVE without making actual money transactions.
@@ -153,8 +168,9 @@
     </div>
 
     <div class="container">
-        <h2 style="color:#177ddc;">
+        <h2 style="color:#00112c;">
             Test Card DPS Transaction
+            <div class="line_header"></div>
         </h2>
         <div class="text-block-1">
             <form id="transactionForm">
