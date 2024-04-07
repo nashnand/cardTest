@@ -27,6 +27,13 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
+        .text-block-1 {
+            letter-spacing: .25px;
+            font-family: Gilroy, sans-serif;
+            font-size: 17px;
+            font-weight: 700
+        }
+
         h2 {
             text-align: center;
             font-weight: bold;
@@ -57,7 +64,8 @@
             margin-top: 20px;
             border: 1px solid #ccc;
             padding: 10px;
-            font-family: 'Roboto', sans-serif;
+            /* font-family: 'Roboto', sans-serif; */
+            font-family: 'Gilroy', sans-serif;
             background-color: #4576d1;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -65,6 +73,7 @@
 
         body {
             background-image: url(assets/images.png);
+            background-color: black;
             background-repeat: no-repeat;
             background-attachment: fixed;
             background-size: cover;
@@ -94,13 +103,27 @@
             width: 80%;
             background-color: whitesmoke;
         }
+
+        .text-color-grey {
+            color: gray
+        }
+
+        .section_cta-final {
+            background-color: #177ddc;
+            background-image: url(https://assets-global.website-files.com/616c7256b52c543a920623bd/63f54c312df57129362d9e3a_Group%201000002659%20\(1\).svg);
+            background-position: 100%;
+            background-repeat: no-repeat;
+            background-size: auto;
+            padding-top: 0;
+            padding-bottom: 0
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
         <div class="h3">
-            <h4 style="color:#0b55c4;">Card Testing</h4>
+            <h4 style="color:#177ddc;">Card Testing</h4>
             <div class="text-style">
                 <p>You can create cards and simulate card transactions in Solid's TEST mode.<br>
                     This allows you to test your cards before you go LIVE without making actual money transactions.
@@ -118,89 +141,98 @@
                 </div>
                 Transaction Response Code "00" Success response code indicates that the test transaction was
                 posted.<br>
-                Copy processorTransactionId & processorLifeCycleId from Authorization transaction response and pass it as Parent processorTransactionId
+                Copy processorTransactionId & processorLifeCycleId from Authorization transaction response and pass it
+                as Parent processorTransactionId
                 & processorLifeCycleId for AuthUpdate,Reversal or Refund.<br><br>
                 <hr class="mySeparator">
                 <b>Request with AuthUpdate, Reversal, OR Refund (Pass parentTxnId-ProcessorLifeCycleID &
                     ProcessorTransactionId)</b><br>
-                        </p>
+                </p>
             </div>
         </div>
     </div>
 
     <div class="container">
-        <h2 style="color:#0b55c4;">
+        <h2 style="color:#177ddc;">
             Test Card DPS Transaction
         </h2>
-        <form id="transactionForm">
-            <div class="form-group">
-                <label for="environment">Environment:</label>
-                <select class="form-control" id="environment">
-                    <option value="Dev">Dev</option>
-                    <option value="QA"  selected=true >QA</option>
-                    <option value="Staging">Staging</option>
-                    <option value="ProdTest">ProdTest</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="txnType">Transaction Type:</label>
-                <select class="form-control" id="txnType">
-                    <option value="auth">Authorization</option>
-                    <option value="authUpdate">Authorization Update</option>
-                    <option value="refund">Refund</option>
-                    <option value="reversal">Reversal</option>
-                    <option value="balanceInquiry">BalanceInquiry</option>
-                </select>
-            </div>
-            <div class="form-group" id="cardIdInput">
-                <label for="cardId">Card ID:</label>
-                <input type="text" class="form-control" id="cardId"
-                    placeholder="e.g., v-xxx-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
-            </div>
-            <div class="form-group" id="amountInput">
-                <label for="amount">Amount:</label>
-                <input type="text" class="form-control" id="amount" placeholder="e.g., 1.00">
-            </div>
-            <div class="form-group" id="processorInput" style="display: none;">
-                <label for="processorTransactionId">Parent Processor Transaction ID:</label>
-                <input type="text" class="form-control" id="processorTransactionId">
-            </div>
-            <div class="form-group" id="processorLifeCycleIdInput" style="display: none;">
-                <label for="processorLifeCycleId">Parent Processor LifeCycle ID:</label>
-                <input type="text" class="form-control" id="processorLifeCycleId">
-            </div>
-            <div class="form-group" id="MCCInput">
-                <label for="MCC">MCC:</label>
-                <input type="text" class="form-control" id="MCC" placeholder="Optional">
-            </div>
-            <div class="form-group" id="MerchantNameInput">
-                <label for="MerchantName">MerchantName:</label>
-                <input type="text" class="form-control" id="MerchantName" placeholder="Optional" maxlength="23">
-            </div>
-            <div class="form-group" id="MerchantCityInput">
-                <label for="MerchantCity">MerchantCity:</label>
-                <input type="text" class="form-control" id="MerchantCity" placeholder="Optional" maxlength="13">
-            </div>
-            <div class="form-group" id="MerchantStateInput" >
-                <label for="MerchantState">MerchantState(2Digit):</label>
-                <input type="text" class="form-control" id="MerchantState" placeholder="Optional" maxlength="2"  oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '');">
-            </div>
-            <div class="form-group" id="MerchantCountry2DigitInput">
-                <label for="MerchantCountry2Digit">MerchantCountry(2Digit):</label>
-                <input type="text" class="form-control" id="MerchantCountry2Digit" placeholder="Optional"  maxlength="2" oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '');">
-            </div>
-            <div class="form-group" id="MerchantPostalCodeInput">
-                <label for="MerchantPostalCode">MerchantPostalCode:</label>
-                <input type="text" class="form-control" id="MerchantPostalCode" placeholder="Optional" maxlength="9" oninput="this.value = this.value.replace(/[^0-9-]/g, '');">
-            </div>
-            <div class="form-group" id="MerchantCountry3DigitInput">
-                <label for="MerchantCountry3Digit">MerchantCountry(3Digit):</label>
-                <input type="text" class="form-control" id="MerchantCountry3Digit" placeholder="Optional" maxlength="3"  oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '');">
-            </div>
-            <!-- <button type="button" class="btn btn-primary" onclick="sendTransaction()">Send</button> -->
-            <button type="button" class="btn btn-primary" id="buttonSendTransaction">Send</button>
-        </form>
-    </div></b>
+        <div class="text-block-1">
+            <form id="transactionForm">
+                <div class="form-group">
+                    <label for="environment">Environment:</label>
+                    <select class="form-control" id="environment">
+                        <option value="Dev">Dev</option>
+                        <option value="QA" selected=true>QA</option>
+                        <option value="Staging">Staging</option>
+                        <option value="ProdTest">ProdTest</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="txnType">Transaction Type:</label>
+                    <select class="form-control" id="txnType">
+                        <option value="auth">Authorization</option>
+                        <option value="authUpdate">Authorization Update</option>
+                        <option value="refund">Refund</option>
+                        <option value="reversal">Reversal</option>
+                        <option value="balanceInquiry">BalanceInquiry</option>
+                    </select>
+                </div>
+                <div class="form-group" id="cardIdInput">
+                    <label for="cardId">Card ID:</label>
+                    <input type="text" class="form-control" id="cardId"
+                        placeholder="e.g., v-xxx-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+                </div>
+                <div class="form-group" id="amountInput">
+                    <label for="amount">Amount:</label>
+                    <input type="text" class="form-control" id="amount" placeholder="e.g., 1.00">
+                </div>
+                <div class="form-group" id="processorInput" style="display: none;">
+                    <label for="processorTransactionId">Parent Processor Transaction ID:</label>
+                    <input type="text" class="form-control" id="processorTransactionId">
+                </div>
+                <div class="form-group" id="processorLifeCycleIdInput" style="display: none;">
+                    <label for="processorLifeCycleId">Parent Processor LifeCycle ID:</label>
+                    <input type="text" class="form-control" id="processorLifeCycleId">
+                </div>
+                <div class="form-group" id="MCCInput">
+                    <label for="MCC">MCC:</label>
+                    <input type="text" class="form-control" id="MCC" placeholder="Optional">
+                </div>
+                <div class="form-group" id="MerchantNameInput">
+                    <label for="MerchantName">MerchantName:</label>
+                    <input type="text" class="form-control" id="MerchantName" placeholder="Optional" maxlength="23">
+                </div>
+                <div class="form-group" id="MerchantCityInput">
+                    <label for="MerchantCity">MerchantCity:</label>
+                    <input type="text" class="form-control" id="MerchantCity" placeholder="Optional" maxlength="13">
+                </div>
+                <div class="form-group" id="MerchantStateInput">
+                    <label for="MerchantState">MerchantState(2Digit):</label>
+                    <input type="text" class="form-control" id="MerchantState" placeholder="Optional" maxlength="2"
+                        oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '');">
+                </div>
+                <div class="form-group" id="MerchantCountry2DigitInput">
+                    <label for="MerchantCountry2Digit">MerchantCountry(2Digit):</label>
+                    <input type="text" class="form-control" id="MerchantCountry2Digit" placeholder="Optional"
+                        maxlength="2" oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '');"
+                        style="text-transform: uppercase">
+                </div>
+                <div class="form-group" id="MerchantPostalCodeInput">
+                    <label for="MerchantPostalCode">MerchantPostalCode:</label>
+                    <input type="text" class="form-control" id="MerchantPostalCode" placeholder="Optional" maxlength="9"
+                        oninput="this.value = this.value.replace(/[^0-9-]/g, '');">
+                </div>
+                <div class="form-group" id="MerchantCountry3DigitInput">
+                    <label for="MerchantCountry3Digit">MerchantCountry(3Digit):</label>
+                    <input type="text" class="form-control" id="MerchantCountry3Digit" placeholder="Optional"
+                        maxlength="3" oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '');"
+                        style="text-transform: uppercase">
+                </div>
+                <!-- <button type="button" class="btn btn-primary" onclick="sendTransaction()">Send</button> -->
+                <button type="button" class="btn btn-primary" id="buttonSendTransaction">Send</button>
+            </form>
+        </div></b>
+    </div>
 
     <div id="responseContainer" class="container" style="display: none;">
         <h3>Transaction Response</h3>
