@@ -127,9 +127,26 @@
             opacity: .5;
         }
 
-        .article__header{
+        .article__header {
             width: 64px;
             height: 64px;
+        }
+    </style>
+    <style>
+        .lowercase-placeholder::-webkit-input-placeholder {
+            text-transform: none;
+        }
+
+        .lowercase-placeholder:-moz-placeholder {
+            text-transform: none;
+        }
+
+        .lowercase-placeholder::-moz-placeholder {
+            text-transform: none;
+        }
+
+        .lowercase-placeholder:-ms-input-placeholder {
+            text-transform: none;
         }
     </style>
 </head>
@@ -138,7 +155,7 @@
     <div class="container">
         <div class="h3">
             <img src="assets\card.jpg" alt="" width="60" height="60">
-            <h4  style="color:#00112c;">Card Testing</h4>
+            <h4 style="color:#00112c;">Card Testing</h4>
             <div class="text-style">
                 <p>You can create cards and simulate card transactions in Solid's TEST mode.<br>
                     This allows you to test your cards before you go LIVE without making actual money transactions.
@@ -229,9 +246,9 @@
                 </div>
                 <div class="form-group" id="MerchantCountry2DigitInput">
                     <label for="MerchantCountry2Digit">MerchantCountry(2Digit):</label>
-                    <input type="text" class="form-control" id="MerchantCountry2Digit" placeholder="Optional"
-                        maxlength="2" oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '');"
-                        style="text-transform: uppercase">
+                    <input type="text" class="form-control lowercase-placeholder" id="MerchantCountry2Digit"
+                        placeholder="Optional" maxlength="2"
+                        oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '');" style="text-transform: uppercase">
                 </div>
                 <div class="form-group" id="MerchantPostalCodeInput">
                     <label for="MerchantPostalCode">MerchantPostalCode:</label>
@@ -239,10 +256,10 @@
                         oninput="this.value = this.value.replace(/[^0-9-]/g, '');">
                 </div>
                 <div class="form-group" id="MerchantCountry3DigitInput">
-                    <label for="MerchantCountry3Digit">MerchantCountry(3Digit):</label>
-                    <input type="text" class="form-control" id="MerchantCountry3Digit" placeholder="Optional"
-                        maxlength="3" oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '');"
-                        style="text-transform: uppercase">
+                    <label for="MerchantCountry2Digit">MerchantCountry(3Digit):</label>
+                    <input type="text" class="form-control lowercase-placeholder" id="MerchantCountry3Digit"
+                        placeholder="Optional" maxlength="3"
+                        oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '');" style="text-transform: uppercase">
                 </div>
                 <!-- <button type="button" class="btn btn-primary" onclick="sendTransaction()">Send</button> -->
                 <button type="button" class="btn btn-primary" id="buttonSendTransaction">Send</button>
