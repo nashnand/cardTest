@@ -205,6 +205,7 @@
                     <select class="form-control" id="txnType">
                         <option value="auth">Authorization</option>
                         <option value="authUpdate">Authorization Update</option>
+                        <option value="settlement">Settlement</option>
                         <option value="refund">Refund</option>
                         <option value="reversal">Reversal</option>
                         <option value="balanceInquiry">BalanceInquiry</option>
@@ -303,7 +304,7 @@
                 document.getElementById('MerchantCountry2DigitInput').style.display = 'none';
                 document.getElementById('MerchantPostalCodeInput').style.display = 'none';
                 document.getElementById('MerchantCountry3DigitInput').style.display = 'none';
-            } else if (txnType === 'authUpdate') {
+            } else if (txnType === 'authUpdate' || txnType==="settlement") {
                 // For "auth" transaction type, show card ID and amount inputs
                 document.getElementById('cardIdInput').style.display = 'block';
                 document.getElementById('amountInput').style.display = 'block';

@@ -12,10 +12,10 @@ function setButtonFunctions() {
 
 var generatedProcessorTransactionId = "";
 var generatedProcessorLifeCycleId = "";
-       
-var MerchantName="";
-var MerchantCity="";
-var MerchantPostalCode="";
+
+var MerchantName = "";
+var MerchantCity = "";
+var MerchantPostalCode = "";
 
 function generateRandomAlphaNumeric(length) {
     var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -30,7 +30,7 @@ function showErrorPopup(message) {
 }
 
 function addSpaces(inputString, spacesToAdd) {
-    spacesToAdd= spacesToAdd - inputString.length;
+    spacesToAdd = spacesToAdd - inputString.length;
     return inputString + " ".repeat(spacesToAdd);
 }
 
@@ -38,58 +38,62 @@ async function sendTransaction() {
     var selectedTransactionType = document.getElementById('txnType').value;
     var selectedEnvironment = document.getElementById('environment').value;
 
-           //Merchant Details 
-           var MCC = document.getElementById('MCC').value;
-           var inputMerchantName = document.getElementById('MerchantName').value;
-           console.log(inputMerchantName);
-           var inputMerchantCity = document.getElementById('MerchantCity').value;
-           var MerchantState = document.getElementById('MerchantState').value;
-           var MerchantCountry2Digit = document.getElementById('MerchantCountry2Digit').value;
-           var inputMerchantPostalCode = document.getElementById('MerchantPostalCode').value;
-           var MerchantCountry3Digit = document.getElementById('MerchantCountry3Digit').value;
+    //Merchant Details 
+    var MCC = document.getElementById('MCC').value;
+    var inputMerchantName = document.getElementById('MerchantName').value;
+    console.log(inputMerchantName);
+    var inputMerchantCity = document.getElementById('MerchantCity').value;
+    var MerchantState = document.getElementById('MerchantState').value;
+    var MerchantCountry2Digit = document.getElementById('MerchantCountry2Digit').value;
+    var inputMerchantPostalCode = document.getElementById('MerchantPostalCode').value;
+    var MerchantCountry3Digit = document.getElementById('MerchantCountry3Digit').value;
 
     // Regular expression pattern for the cardId format
-     var pattern = /^v-[a-zA-Z0-9]{3}-[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}$/;
+    var pattern = /^v-[a-zA-Z0-9]{3}-[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}$/;
 
     // Below Mandatory Check for InputField
     if (selectedTransactionType == "auth") {
         var amount = document.getElementById('amount').value;
         var cardId = document.getElementById('cardId').value;
 
-        if (MCC.trim() === "")
-        {MCC="5942";}
-        
-        if (inputMerchantName.trim() === ""){
-        MerchantName="BUCKS OF STAR TEA      "}
-        else{
+        if (MCC.trim() === "") { MCC = "5942"; }
+
+        if (inputMerchantName.trim() === "") {
+            MerchantName = "BUCKS OF STAR TEA      "
+        }
+        else {
             var desiredLength = 23;
             MerchantName = addSpaces(inputMerchantName, desiredLength);
         }
 
-        if (inputMerchantCity.trim() === ""){
-        MerchantCity="DENVER       ";}
-        else{
-        var desiredLength = 13;
-        MerchantCity = addSpaces(inputMerchantCity, desiredLength);
-       }
-
-        if (MerchantState.trim() === ""){
-        MerchantState="CO";}
-
-        if (MerchantCountry2Digit.trim() === ""){
-        MerchantCountry2Digit="US";}
-
-        if (inputMerchantPostalCode.trim() === ""){
-        MerchantPostalCode="98109    ";}
-        else{
-        var desiredLength = 9;
-        MerchantPostalCode = addSpaces(inputMerchantPostalCode, desiredLength);
+        if (inputMerchantCity.trim() === "") {
+            MerchantCity = "DENVER       ";
         }
-        if (MerchantCountry3Digit.trim() === ""){
-        MerchantCountry3Digit="USA";
+        else {
+            var desiredLength = 13;
+            MerchantCity = addSpaces(inputMerchantCity, desiredLength);
         }
 
-        var MerchantLocation=MerchantName+MerchantCity+MerchantState+MerchantCountry2Digit;
+        if (MerchantState.trim() === "") {
+            MerchantState = "CO";
+        }
+
+        if (MerchantCountry2Digit.trim() === "") {
+            MerchantCountry2Digit = "US";
+        }
+
+        if (inputMerchantPostalCode.trim() === "") {
+            MerchantPostalCode = "98109    ";
+        }
+        else {
+            var desiredLength = 9;
+            MerchantPostalCode = addSpaces(inputMerchantPostalCode, desiredLength);
+        }
+        if (MerchantCountry3Digit.trim() === "") {
+            MerchantCountry3Digit = "USA";
+        }
+
+        var MerchantLocation = MerchantName + MerchantCity + MerchantState + MerchantCountry2Digit;
         console.log('MerchantLocation:', MerchantLocation);
         //Check if amount and card ID are not empty
         if (amount.trim() === '' || cardId.trim() === '') {
@@ -158,7 +162,7 @@ async function sendTransaction() {
             apiUrl = "/visadps/authorisations/advices";
             break;
         case "refund":
-        case "Settlement":
+        case "settlement":
             apiUrl = "/visadps/financials/advices";
             break;
         case "reversal":
@@ -690,6 +694,69 @@ async function sendTransaction() {
         }
     };
 
+    var authSettledata =
+    {
+        Hdr: {
+            MsgFctn: "ADVC",
+            PrtcolVrsn: "2.49.1",
+            InitgPty: {
+                Id: "VisaDPS"
+            },
+            CreDtTm: new Date().toISOString()
+        },
+        Body: {
+            Tx: {
+                TxTp: "00",
+                TxAmts: {
+                    TxAmt: {
+                        Amt: parseFloat(document.getElementById('amount').value),
+                        Ccy: "840"
+                    },
+                    CrdhldrBllgAmt: {
+                        Amt: parseFloat(document.getElementById('amount').value),
+                        XchgRate: 1,
+                        Ccy: "840"
+                    }
+                },
+                TxId: {
+                    SysTracAudtNb: "000006",
+                    LclDtTm: new Date().toISOString(),
+                    RtrvlRefNb: "765643377823",
+                    cardIssrRefData: JSON.stringify({
+                        "CARD-ID": document.getElementById('cardId').value,
+                        "ProcessorTransactionId": generatedProcessorTransactionId = generateRandomAlphaNumeric(64),
+                        "ProcessorTransactionIdCollection": [{
+                            "ProcessorTransactionId": document.getElementById('processorTransactionId').value,
+                            "MsgFctn": "REQU"
+                        }],
+                        "ProcessorLifeCycleId": document.getElementById('processorLifeCycleId').value
+                    }),
+                },
+                AltrnMsgRsn: [
+                    "0029"
+                ]
+            },
+            Cntxt: {
+                TxCntxt: {
+                    MrchntCtgyCd: "5999"
+                }
+            },
+            Envt: {
+                Accptr: {
+                    NmAndLctn: "BUCKS OF STAR TEA      DENVER       COUS"
+                },
+                Acqrr: {
+                    Id: "59000000204"
+                }
+            },
+            PrcgRslt: {
+                RsltData: {
+                    RsltDtls: "00"
+                }
+            }
+        }
+
+    }
     var reversaldata = {
         Hdr: {
             MsgFctn: "ADVC",
@@ -833,6 +900,8 @@ async function sendTransaction() {
         xhr.send(JSON.stringify(authdata));
     else if (selectedTransactionType == "authUpdate")
         xhr.send(JSON.stringify(authUpdatedata));
+    else if (selectedTransactionType == "settlement")
+        xhr.send(JSON.stringify(authSettledata));
     else if (selectedTransactionType == "reversal")
         xhr.send(JSON.stringify(reversaldata));
     else if (selectedTransactionType == "refund")
