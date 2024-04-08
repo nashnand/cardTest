@@ -917,9 +917,12 @@ function displayResponse(response) {
         console.log(document.getElementById('txnType').value)
         responseText += "Available Balance: " + response.Body.Tx.AcctBal[0].Bal[0].Amt + " USD" + "<br>";
     }
-    else {
+    else if (document.getElementById('txnType').value == "auth") {
         responseText += "ProcessorTransactionId: " + generatedProcessorTransactionId + "<br>";
         responseText += "ProcessorLifeCycleId: " + generatedProcessorLifeCycleId + "<br>";
+    }
+    else {
+        responseText += "ProcessorTransactionId: " + generatedProcessorTransactionId + "<br>";
     }
     document.getElementById('responseText').innerHTML = responseText;
     document.getElementById('responseContainer').style.display = 'block';
