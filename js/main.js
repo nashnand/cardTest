@@ -120,10 +120,10 @@ async function sendTransaction() {
     else {
         var amount = document.getElementById('amount').value;
         var cardId = document.getElementById('cardId').value;
-        var processorTransactionId = document.getElementById('processorTransactionId').value;
-        var processorLifeCycleId = document.getElementById('processorLifeCycleId').value;
+        var parentProcessorTransactionId = document.getElementById('parentProcessorTransactionId').value;
+        var parentProcessorLifeCycleId = document.getElementById('parentProcessorLifeCycleId').value;
         // Check if amount,card ID ,ParentProcessorTransactionId & ParentProcessorLifeCycleId are not empty
-        if (amount.trim() === '' || cardId.trim() === '' || processorTransactionId.trim() === '' || processorLifeCycleId.trim() === '') {
+        if (amount.trim() === '' || cardId.trim() === '' || parentProcessorTransactionId.trim() === '' || parentProcessorLifeCycleId.trim() === '') {
             showErrorPopup('Please fill in all mandatory fields (Amount , Card Number , ParentProcessorTransactionId and ParentProcessorLifeCycleId ).');
             return; // Prevent form submission if mandatory fields are empty
         }
@@ -183,760 +183,771 @@ async function sendTransaction() {
     }
 
     //PAYLOAD DATA
-    var balanceInquirydata = {
-        Hdr: {
-            MsgFctn: "REQU",
-            PrtcolVrsn: "2.49.1",
-            InitgPty: {
-                Id: "VisaDPS"
-            },
-            CreDtTm: new Date().toISOString()
-        },
-        Body: {
-            Tx: {
-                TxTp: "31",
-                TxId: {
-                    TysTracAudtNb: "000001",
-                    LclDtTm: "2022-06-01T12:00:00",
-                    RtrvlRefNb: "215218000001",
-                    CardIssrRefData: JSON.stringify({
-                        "CARD-ID": document.getElementById('cardId').value,
-                        "ProcessorTransactionId": generatedProcessorTransactionId = generateRandomAlphaNumeric(64),
-                        "ProcessorLifeCycleId": generatedProcessorLifeCycleId = generateRandomAlphaNumeric(64)
-                    })
-                }
-            },
-            Cntxt: {
-                TxCntxt: {
-                    MrchntCtgyCd: "6011"
-                }
-            },
-            Envt: {
-                Accptr: {
-                    Adr: {
-                        "Ctry": "USA",
-                        "CtrySubDvsnMjr": "06",
-                        "PstlCd": "94044    "
+    switch (selectedTransactionType) {
+        case "balanceInquiry":
+            var balanceInquirydata = {
+                Hdr: {
+                    MsgFctn: "REQU",
+                    PrtcolVrsn: "2.49.1",
+                    InitgPty: {
+                        Id: "VisaDPS"
                     },
-                    Id: "MULTCLEAR      ",
-                    NmAndLctn: "BUCKS OF STAR TEA      DENVER       COUS"
+                    CreDtTm: new Date().toISOString()
                 },
-                Acqrr: {
-                    Id: "59992960009"
-                }
-            }
-        }
-    };
-
-    var authdata = {
-        Hdr: {
-            MsgFctn: "REQU",
-            PrtcolVrsn: "2.49.1",
-            InitgPty: {
-                Id: "VisaDPS"
-            },
-            CreDtTm: new Date().toISOString()
-        },
-        Body: {
-            Tx: {
-                AcctFr: {
-                    AcctTp: "00"
-                },
-                TxTp: "00",
-                AddtlAmts: [],
-                TxAmts: {
-                    TxAmt: {
-                        Amt: parseFloat(document.getElementById('amount').value),
-                        Ccy: "840"
+                Body: {
+                    Tx: {
+                        TxTp: "31",
+                        TxId: {
+                            TysTracAudtNb: "000001",
+                            LclDtTm: "2022-06-01T12:00:00",
+                            RtrvlRefNb: "215218000001",
+                            CardIssrRefData: JSON.stringify({
+                                "CARD-ID": document.getElementById('cardId').value,
+                                "ProcessorTransactionId": generatedProcessorTransactionId = generateRandomAlphaNumeric(64),
+                                "ProcessorLifeCycleId": generatedProcessorLifeCycleId = generateRandomAlphaNumeric(64)
+                            })
+                        }
                     },
-                    RcncltnAmt: {
-                        Amt: parseFloat(document.getElementById('amount').value),
-                        XchgRate: 1,
-                        Ccy: "840",
-                        QtnDt: new Date().toISOString()
+                    Cntxt: {
+                        TxCntxt: {
+                            MrchntCtgyCd: "6011"
+                        }
                     },
-                    CrdhldrBllgAmt: {
-                        Amt: parseFloat(document.getElementById('amount').value),
-                        XchgRate: 1,
-                        Ccy: "840"
-                    },
-                    AmtQlfr: "ESTM",
-                    DtldAmt: [{
-                        Amt: {
-                            Amt: parseFloat(document.getElementById('amount').value)
+                    Envt: {
+                        Accptr: {
+                            Adr: {
+                                "Ctry": "USA",
+                                "CtrySubDvsnMjr": "06",
+                                "PstlCd": "94044    "
+                            },
+                            Id: "MULTCLEAR      ",
+                            NmAndLctn: "BUCKS OF STAR TEA      DENVER       COUS"
                         },
-                        OthrTp: "BASE",
-                        Tp: "OTHP"
-                    }]
-                },
-                TxId: {
-                    TrnsmssnDtTm: new Date().toISOString(),
-                    SysTracAudtNb: "901530",
-                    LclDtTm: new Date().toISOString(),
-                    RtrvlRefNb: "404331901530",
-                    CardIssrRefData: JSON.stringify({
-                        "CARD-ID": document.getElementById('cardId').value,
-                        "ProcessorTransactionId": selectedTransactionType === 'auth' ? (generatedProcessorTransactionId = generateRandomAlphaNumeric(64)) : document.getElementById('processorTransactionId').value,
-                        "ProcessorLifeCycleId": selectedTransactionType === 'auth' ? (generatedProcessorLifeCycleId = generateRandomAlphaNumeric(64)) : document.getElementById('processorLifeCycleId').value
-                    }),
-                    AcqrrRefData: "469216     ",
-                    LifeCyclTracIdData: {
-                        Id: "464043146519807"
-                    }
-                },
-                AddtlData: [{
-                    Tp: "SPECIALTRANSIND",
-                    Val: "T"
-                },
-                {
-                    Tp: "VAUResult",
-                    Val: "0"
-                },
-                {
-                    Tp: "CryptoPurchInd",
-                    Val: "N"
-                },
-                {
-                    Tp: "DeferredAuthInd",
-                    Val: "N"
-                }
-                ],
-                SpclPrgrmmQlfctn: [{
-                    Dtl: [{
-                        Nm: "MVV",
-                        Val: "2005590000"
-                    }]
-                }]
-            },
-            Cntxt: {
-                PtOfSvcCntxt: {
-                    CardDataNtryMd: "KEEN",
-                    AttnddInd: false,
-                    CrdhldrActvtd: true,
-                    EComrcInd: true,
-                    CrdhldrPres: false,
-                    CardPres: false,
-                    PrtlApprvlSpprtd: false,
-                    EComrcData: [{
-                        Tp: "ECI",
-                        Val: "5"
-                    }]
-                },
-                Vrfctn: [{
-                    VrfctnRslt: [{
-                        RsltDtls: [{
-                            Tp: "CAMReliability",
-                            Val: "0"
-                        }]
-                    }]
-                },
-                {
-                    Tp: "THDS",
-                    SubTp: "Visa",
-                    VrfctnInf: [{
-                        Tp: "Method",
-                        Val: {
-                            TxtVal: "Z"
-                        }
-                    }]
-                },
-                {
-                    Tp: "CHSA",
-                    SubTp: "AR",
-                    VrfctnRslt: [{
-                        Rslt: "SUCC",
-                        RsltDtls: [{
-                            Tp: "AVS result",
-                            Val: "Y"
-                        }]
-                    }],
-                    VrfctnInf: [{
-                        Tp: "PCDV",
-                        Val: {
-                            TxtVal: "321191626"
-                        }
-                    },
-                    {
-                        Tp: "ADDB",
-                        Val: {
-                            TxtVal: "2"
+                        Acqrr: {
+                            Id: "59992960009"
                         }
                     }
-                    ]
                 }
-                ],
-                RskCntxt: [{
-                    rskInptData: [{
-                        tp: "VisaRiskScore",
-                        val: "24"
+            };
+            break;
+        case "auth":
+            var authdata = {
+                Hdr: {
+                    MsgFctn: "REQU",
+                    PrtcolVrsn: "2.49.1",
+                    InitgPty: {
+                        Id: "VisaDPS"
                     },
-                    {
-                        tp: "VisaRiskReason",
-                        val: "00"
-                    },
-                    {
-                        tp: "VisaRiskCondCode1",
-                        val: "00"
-                    },
-                    {
-                        tp: "VisaRiskCondCode2",
-                        val: "00"
-                    },
-                    {
-                        tp: "VisaRiskCondCode3",
-                        val: "00"
-                    }
-                    ],
-                    _class: "com.visa.ip.iso20022.model.RiskContext"
-                }],
-                TxCntxt: {
-                    Rcncltn: {
-                        Dt: new Date().toISOString(),
-                        Id: "VISAInternational"
-                    },
-                    MrchntCtgyCd: MCC,
-                    SttlmSvc: {
-                        SttlmSvcApld: {
-                            Tp: "VISAInternational"
-                        }
-                    },
-                    CardPrgrmm: {
-                        CardPrgrmmApld: {
-                            Id: "VSN"
-                        }
-                    },
-                    ICCFllbckInd: false
-                }
-            },
-            Envt: {
-                Accptr: {
-                    NmAndLctn: MerchantLocation,
-                    Adr: {
-                        Ctry: MerchantCountry3Digit,
-                        CtrySubDvsnMjr: "53",
-                        PstlCd: MerchantPostalCode
-                    },
-                    Id: "235251000762203"
+                    CreDtTm: new Date().toISOString()
                 },
-                Termnl: {
-                    TermnlId: {
-                        Id: "99999999"
-                    },
-                    Cpblties: {
-                        CardCaptrCpbl: false,
-                        CardRdngCpblty: ["UNSP"],
-                        CrdhldrVrfctnCpblty: [{
-                            Cpblty: "UNSP"
-                        }],
-                        PINPadInprtv: false
-                    },
-                    Tp: "OTHP",
-                    OthrTp: "03"
-                },
-                Sndr: {
-                    Id: "11111111111"
-                },
-                Card: {
-                    XpryDt: "2610",
-                    PmtAcctRef: "V0010013823307740289498425624",
-                    PAN: "9999999999997117"
-                },
-                Acqrr: {
-                    Ctry: "840",
-                    Id: "59000002422"
-                },
-                Tkn: {
-                    PmtTkn: "4316227171030331",
-                    TknAssrncData: "10",
-                    TknRqstrId: "40010051602",
-                    TknXpryDt: "2610"
-                }
-            },
-            SplmtryData: [{
-                Envlp: {}
-            }]
-        }
-    };
-
-    var authUpdatedata = {
-        Hdr: {
-            CreDtTm: new Date().toISOString(),
-            InitgPty: {
-                Id: "VisaDPS"
-            },
-            MsgFctn: "ADVC",
-            PrtcolVrsn: "2.49.1"
-        },
-        Body: {
-            Cntxt: {
-                PtOfSvcCntxt: {
-                    AttnddInd: true,
-                    CardDataNtryMd: "UNSP",
-                    CardPres: false,
-                    CrdhldrActvtd: true,
-                    MOTOInd: true
-                },
-                RskCntxt: [
-                    {
-                        RskInptData: [
-                            {
-                                Tp: "FalconScoreSource",
-                                Val: "6"
+                Body: {
+                    Tx: {
+                        AcctFr: {
+                            AcctTp: "00"
+                        },
+                        TxTp: "00",
+                        AddtlAmts: [],
+                        TxAmts: {
+                            TxAmt: {
+                                Amt: parseFloat(document.getElementById('amount').value),
+                                Ccy: "840"
                             },
-                            {
-                                Tp: "FalconScoreValue",
-                                Val: "0000"
+                            RcncltnAmt: {
+                                Amt: parseFloat(document.getElementById('amount').value),
+                                XchgRate: 1,
+                                Ccy: "840",
+                                QtnDt: new Date().toISOString()
                             },
-                            {
-                                Tp: "FalconRespCode",
-                                Val: "0"
+                            CrdhldrBllgAmt: {
+                                Amt: parseFloat(document.getElementById('amount').value),
+                                XchgRate: 1,
+                                Ccy: "840"
                             },
-                            {
-                                Tp: "FalconReason1",
-                                Val: "00"
-                            },
-                            {
-                                Tp: "FalconReason2",
-                                Val: "00"
-                            },
-                            {
-                                Tp: "FalconReason3",
-                                Val: "00"
+                            AmtQlfr: "ESTM",
+                            DtldAmt: [{
+                                Amt: {
+                                    Amt: parseFloat(document.getElementById('amount').value)
+                                },
+                                OthrTp: "BASE",
+                                Tp: "OTHP"
+                            }]
+                        },
+                        TxId: {
+                            TrnsmssnDtTm: new Date().toISOString(),
+                            SysTracAudtNb: "901530",
+                            LclDtTm: new Date().toISOString(),
+                            RtrvlRefNb: "404331901530",
+                            CardIssrRefData: JSON.stringify({
+                                "CARD-ID": document.getElementById('cardId').value,
+                                "ProcessorTransactionId": generatedProcessorTransactionId = generateRandomAlphaNumeric(64),
+                                "ProcessorLifeCycleId": generatedProcessorLifeCycleId = generateRandomAlphaNumeric(64),
+                            }),
+                            AcqrrRefData: "469216     ",
+                            LifeCyclTracIdData: {
+                                Id: "464043146519807"
                             }
-                        ]
-                    }
-                ],
-                TxCntxt: {
-                    CardPrgrmm: {
-                        CardPrgrmmApld: {
-                            Id: "VSN"
+                        },
+                        AddtlData: [{
+                            Tp: "SPECIALTRANSIND",
+                            Val: "T"
+                        },
+                        {
+                            Tp: "VAUResult",
+                            Val: "0"
+                        },
+                        {
+                            Tp: "CryptoPurchInd",
+                            Val: "N"
+                        },
+                        {
+                            Tp: "DeferredAuthInd",
+                            Val: "N"
                         }
+                        ],
+                        SpclPrgrmmQlfctn: [{
+                            Dtl: [{
+                                Nm: "MVV",
+                                Val: "2005590000"
+                            }]
+                        }]
                     },
-                    ICCFllbckInd: false,
-                    MrchntCtgyCd: "5965",
-                    Rcncltn: {
-                        Dt: "2023-05-01",
-                        Id: "VISAInternational"
-                    },
-                    SttlmSvc: {
-                        SttlmSvcApld: {
-                            Tp: "VISAInternational"
-                        }
-                    }
-                },
-                Vrfctn: [
-                    {
-                        VrfctnRslt: [
+                    Cntxt: {
+                        PtOfSvcCntxt: {
+                            CardDataNtryMd: "KEEN",
+                            AttnddInd: false,
+                            CrdhldrActvtd: true,
+                            EComrcInd: true,
+                            CrdhldrPres: false,
+                            CardPres: false,
+                            PrtlApprvlSpprtd: false,
+                            EComrcData: [{
+                                Tp: "ECI",
+                                Val: "5"
+                            }]
+                        },
+                        Vrfctn: [{
+                            VrfctnRslt: [{
+                                RsltDtls: [{
+                                    Tp: "CAMReliability",
+                                    Val: "0"
+                                }]
+                            }]
+                        },
+                        {
+                            Tp: "THDS",
+                            SubTp: "Visa",
+                            VrfctnInf: [{
+                                Tp: "Method",
+                                Val: {
+                                    TxtVal: "Z"
+                                }
+                            }]
+                        },
+                        {
+                            Tp: "CHSA",
+                            SubTp: "AR",
+                            VrfctnRslt: [{
+                                Rslt: "SUCC",
+                                RsltDtls: [{
+                                    Tp: "AVS result",
+                                    Val: "Y"
+                                }]
+                            }],
+                            VrfctnInf: [{
+                                Tp: "PCDV",
+                                Val: {
+                                    TxtVal: "321191626"
+                                }
+                            },
                             {
-                                RsltDtls: [
+                                Tp: "ADDB",
+                                Val: {
+                                    TxtVal: "2"
+                                }
+                            }
+                            ]
+                        }
+                        ],
+                        RskCntxt: [{
+                            rskInptData: [{
+                                tp: "VisaRiskScore",
+                                val: "24"
+                            },
+                            {
+                                tp: "VisaRiskReason",
+                                val: "00"
+                            },
+                            {
+                                tp: "VisaRiskCondCode1",
+                                val: "00"
+                            },
+                            {
+                                tp: "VisaRiskCondCode2",
+                                val: "00"
+                            },
+                            {
+                                tp: "VisaRiskCondCode3",
+                                val: "00"
+                            }
+                            ],
+                            _class: "com.visa.ip.iso20022.model.RiskContext"
+                        }],
+                        TxCntxt: {
+                            Rcncltn: {
+                                Dt: new Date().toISOString(),
+                                Id: "VISAInternational"
+                            },
+                            MrchntCtgyCd: MCC,
+                            SttlmSvc: {
+                                SttlmSvcApld: {
+                                    Tp: "VISAInternational"
+                                }
+                            },
+                            CardPrgrmm: {
+                                CardPrgrmmApld: {
+                                    Id: "VSN"
+                                }
+                            },
+                            ICCFllbckInd: false
+                        }
+                    },
+                    Envt: {
+                        Accptr: {
+                            NmAndLctn: MerchantLocation,
+                            Adr: {
+                                Ctry: MerchantCountry3Digit,
+                                CtrySubDvsnMjr: "53",
+                                PstlCd: MerchantPostalCode
+                            },
+                            Id: "235251000762203"
+                        },
+                        Termnl: {
+                            TermnlId: {
+                                Id: "99999999"
+                            },
+                            Cpblties: {
+                                CardCaptrCpbl: false,
+                                CardRdngCpblty: ["UNSP"],
+                                CrdhldrVrfctnCpblty: [{
+                                    Cpblty: "UNSP"
+                                }],
+                                PINPadInprtv: false
+                            },
+                            Tp: "OTHP",
+                            OthrTp: "03"
+                        },
+                        Sndr: {
+                            Id: "11111111111"
+                        },
+                        Card: {
+                            XpryDt: "2610",
+                            PmtAcctRef: "V0010013823307740289498425624",
+                            PAN: "9999999999997117"
+                        },
+                        Acqrr: {
+                            Ctry: "840",
+                            Id: "59000002422"
+                        },
+                        Tkn: {
+                            PmtTkn: "4316227171030331",
+                            TknAssrncData: "10",
+                            TknRqstrId: "40010051602",
+                            TknXpryDt: "2610"
+                        }
+                    },
+                    SplmtryData: [{
+                        Envlp: {}
+                    }]
+                }
+            };
+            break;
+        case "authUpdate":
+            var authUpdatedata = {
+                Hdr: {
+                    CreDtTm: new Date().toISOString(),
+                    InitgPty: {
+                        Id: "VisaDPS"
+                    },
+                    MsgFctn: "ADVC",
+                    PrtcolVrsn: "2.49.1"
+                },
+                Body: {
+                    Cntxt: {
+                        PtOfSvcCntxt: {
+                            AttnddInd: true,
+                            CardDataNtryMd: "UNSP",
+                            CardPres: false,
+                            CrdhldrActvtd: true,
+                            MOTOInd: true
+                        },
+                        RskCntxt: [
+                            {
+                                RskInptData: [
                                     {
-                                        Tp: "CAMReliability",
+                                        Tp: "FalconScoreSource",
+                                        Val: "6"
+                                    },
+                                    {
+                                        Tp: "FalconScoreValue",
+                                        Val: "0000"
+                                    },
+                                    {
+                                        Tp: "FalconRespCode",
                                         Val: "0"
+                                    },
+                                    {
+                                        Tp: "FalconReason1",
+                                        Val: "00"
+                                    },
+                                    {
+                                        Tp: "FalconReason2",
+                                        Val: "00"
+                                    },
+                                    {
+                                        Tp: "FalconReason3",
+                                        Val: "00"
+                                    }
+                                ]
+                            }
+                        ],
+                        TxCntxt: {
+                            CardPrgrmm: {
+                                CardPrgrmmApld: {
+                                    Id: "VSN"
+                                }
+                            },
+                            ICCFllbckInd: false,
+                            MrchntCtgyCd: "5965",
+                            Rcncltn: {
+                                Dt: "2023-05-01",
+                                Id: "VISAInternational"
+                            },
+                            SttlmSvc: {
+                                SttlmSvcApld: {
+                                    Tp: "VISAInternational"
+                                }
+                            }
+                        },
+                        Vrfctn: [
+                            {
+                                VrfctnRslt: [
+                                    {
+                                        RsltDtls: [
+                                            {
+                                                Tp: "CAMReliability",
+                                                Val: "0"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                SubTp: "Visa",
+                                Tp: "THDS",
+                                VrfctnInf: [
+                                    {
+                                        Tp: "Method",
+                                        Val: {
+                                            TxtVal: "Z"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                Tp: "NVSC",
+                                VrfctnRslt: [
+                                    {
+                                        Rslt: "SUCC"
                                     }
                                 ]
                             }
                         ]
                     },
-                    {
-                        SubTp: "Visa",
-                        Tp: "THDS",
-                        VrfctnInf: [
-                            {
-                                Tp: "Method",
-                                Val: {
-                                    TxtVal: "Z"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        Tp: "NVSC",
-                        VrfctnRslt: [
-                            {
-                                Rslt: "SUCC"
-                            }
-                        ]
-                    }
-                ]
-            },
-            Envt: {
-                Accptr: {
-                    Adr: {
-                        Ctry: "USA",
-                        CtrySubDvsnMjr: "06",
-                        PstlCd: "94044    "
-                    },
-                    Id: "MULTCLEAR      ",
-                    NmAndLctn: "BUCKS OF STAR TEA      DENVER       COUS"
-                },
-                Acqrr: {
-                    Id: "59000000204"
-                },
-                Card: {
-                    PAN: "9999999999994368",
-                    XpryDt: "2504"
-                },
-                Sndr: {
-                    Id: "11111111111"
-                },
-                Termnl: {
-                    Cpblties: {
-                        CardCaptrCpbl: false,
-                        CardRdngCpblty: [
-                            "UNSP"
-                        ],
-                        CrdhldrVrfctnCpblty: [
-                            {
-                                Cpblty: "UNSP"
-                            }
-                        ],
-                        PINPadInprtv: false
-                    },
-                    OffPrmissInd: false,
-                    TermnlId: {
-                        Id: "TERMID01"
-                    },
-                    Tp: "POST"
-                }
-            },
-            Tx: {
-                AcctFr: {
-                    AcctTp: "00"
-                },
-                AddtlAmts: [
-                    {
-                        Amt: {
-                            Amt: parseFloat(document.getElementById('amount').value),
-                            Ccy: "USD"
+                    Envt: {
+                        Accptr: {
+                            Adr: {
+                                Ctry: "USA",
+                                CtrySubDvsnMjr: "06",
+                                PstlCd: "94044    "
+                            },
+                            Id: "MULTCLEAR      ",
+                            NmAndLctn: "BUCKS OF STAR TEA      DENVER       COUS"
                         },
-                        Labl: "DEBIT_HOLD_INCREASE",
-                        OthrTp: "HOLD",
-                        Tp: "OTHP"
-                    }
-                ],
-                AddtlData: [
-                    {
-                        Tp: "VAUResult",
-                        Val: "0"
+                        Acqrr: {
+                            Id: "59000000204"
+                        },
+                        Card: {
+                            PAN: "9999999999994368",
+                            XpryDt: "2504"
+                        },
+                        Sndr: {
+                            Id: "11111111111"
+                        },
+                        Termnl: {
+                            Cpblties: {
+                                CardCaptrCpbl: false,
+                                CardRdngCpblty: [
+                                    "UNSP"
+                                ],
+                                CrdhldrVrfctnCpblty: [
+                                    {
+                                        Cpblty: "UNSP"
+                                    }
+                                ],
+                                PINPadInprtv: false
+                            },
+                            OffPrmissInd: false,
+                            TermnlId: {
+                                Id: "TERMID01"
+                            },
+                            Tp: "POST"
+                        }
                     },
-                    {
-                        Tp: "CryptoPurchInd",
-                        Val: "N"
-                    },
-                    {
-                        Tp: "DeferredAuthInd",
-                        Val: "N"
-                    }
-                ],
-                SpclPrgrmmQlfctn: [
-                    {
-                        Dtl: [
+                    Tx: {
+                        AcctFr: {
+                            AcctTp: "00"
+                        },
+                        AddtlAmts: [
                             {
-                                Nm: "FPI",
-                                Val: "101"
+                                Amt: {
+                                    Amt: parseFloat(document.getElementById('amount').value),
+                                    Ccy: "USD"
+                                },
+                                Labl: "DEBIT_HOLD_INCREASE",
+                                OthrTp: "HOLD",
+                                Tp: "OTHP"
+                            }
+                        ],
+                        AddtlData: [
+                            {
+                                Tp: "VAUResult",
+                                Val: "0"
                             },
                             {
-                                Nm: "MVV",
-                                Val: "0123456789"
+                                Tp: "CryptoPurchInd",
+                                Val: "N"
+                            },
+                            {
+                                Tp: "DeferredAuthInd",
+                                Val: "N"
                             }
+                        ],
+                        SpclPrgrmmQlfctn: [
+                            {
+                                Dtl: [
+                                    {
+                                        Nm: "FPI",
+                                        Val: "101"
+                                    },
+                                    {
+                                        Nm: "MVV",
+                                        Val: "0123456789"
+                                    }
+                                ]
+                            },
+                            {}
+                        ],
+                        TxAmts: {
+                            AmtQlfr: "ESTM",
+                            CrdhldrBllgAmt: {
+                                Amt: parseFloat(document.getElementById('amount').value),
+                                Ccy: "USD",
+                                XchgRate: 1
+                            },
+                            DtldAmt: [
+                                {
+                                    Amt: {
+                                        Amt: parseFloat(document.getElementById('amount').value),
+                                    },
+                                    OthrTp: "BASE",
+                                    Tp: "OTHP"
+                                }
+                            ],
+                            RcncltnAmt: {
+                                Amt: parseFloat(document.getElementById('amount').value),
+                                Ccy: "USD",
+                                QtnDt: "2023-04-06T00:00:00Z",
+                                XchgRate: 1
+                            },
+                            TxAmt: {
+                                Amt: parseFloat(document.getElementById('amount').value),
+                                Ccy: "USD"
+                            }
+                        },
+                        TxId: {
+                            AcqrrRefData: "12345678901",
+                            cardIssrRefData: JSON.stringify({
+                                "CARD-ID": document.getElementById('cardId').value,
+                                "ProcessorTransactionId": generatedProcessorTransactionId = generateRandomAlphaNumeric(64),
+                                "ProcessorTransactionIdCollection": [{
+                                    "ProcessorTransactionId": document.getElementById('parentProcessorTransactionId').value,
+                                    "MsgFctn": "REQU"
+                                }],
+                                "ProcessorLifeCycleId": document.getElementById('parentProcessorLifeCycleId').value
+                            }),
+                            LclDtTm: new Date().toISOString(),
+                            LifeCyclTracIdData: {
+                                Id: "001680722186868"
+                            },
+                            RtrvlRefNb: "765643377823",
+                            SysTracAudtNb: "265918",
+                            TrnsmssnDtTm: "2023-05-01T14:36:45Z"
+                        },
+                        TxTp: "00"
+                    }
+                }
+            };
+            break;
+        case "settlement":
+            var authSettledata =
+            {
+                Hdr: {
+                    MsgFctn: "ADVC",
+                    PrtcolVrsn: "2.49.1",
+                    InitgPty: {
+                        Id: "VisaDPS"
+                    },
+                    CreDtTm: new Date().toISOString()
+                },
+                Body: {
+                    Tx: {
+                        TxTp: "00",
+                        TxAmts: {
+                            TxAmt: {
+                                Amt: parseFloat(document.getElementById('amount').value),
+                                Ccy: "840"
+                            },
+                            CrdhldrBllgAmt: {
+                                Amt: parseFloat(document.getElementById('amount').value),
+                                XchgRate: 1,
+                                Ccy: "840"
+                            }
+                        },
+                        TxId: {
+                            SysTracAudtNb: "000006",
+                            LclDtTm: new Date().toISOString(),
+                            RtrvlRefNb: "765643377823",
+                            cardIssrRefData: JSON.stringify({
+                                "CARD-ID": document.getElementById('cardId').value,
+                                "ProcessorTransactionId": generatedProcessorTransactionId = generateRandomAlphaNumeric(64),
+                                "ProcessorTransactionIdCollection": [{
+                                    "ProcessorTransactionId": document.getElementById('parentProcessorTransactionId').value,
+                                    "MsgFctn": "REQU"
+                                }],
+                                "ProcessorLifeCycleId": document.getElementById('parentProcessorLifeCycleId').value
+                            }),
+                        },
+                        AltrnMsgRsn: [
+                            "0029"
                         ]
                     },
-                    {}
-                ],
-                TxAmts: {
-                    AmtQlfr: "ESTM",
-                    CrdhldrBllgAmt: {
-                        Amt: parseFloat(document.getElementById('amount').value),
-                        Ccy: "USD",
-                        XchgRate: 1
-                    },
-                    DtldAmt: [
-                        {
-                            Amt: {
-                                Amt: parseFloat(document.getElementById('amount').value),
-                            },
-                            OthrTp: "BASE",
-                            Tp: "OTHP"
+                    Cntxt: {
+                        TxCntxt: {
+                            MrchntCtgyCd: "5999"
                         }
-                    ],
-                    RcncltnAmt: {
-                        Amt: parseFloat(document.getElementById('amount').value),
-                        Ccy: "USD",
-                        QtnDt: "2023-04-06T00:00:00Z",
-                        XchgRate: 1
                     },
-                    TxAmt: {
-                        Amt: parseFloat(document.getElementById('amount').value),
-                        Ccy: "USD"
+                    Envt: {
+                        Accptr: {
+                            NmAndLctn: "BUCKS OF STAR TEA      DENVER       COUS"
+                        },
+                        Acqrr: {
+                            Id: "59000000204"
+                        }
+                    },
+                    PrcgRslt: {
+                        RsltData: {
+                            RsltDtls: "00"
+                        }
                     }
-                },
-                TxId: {
-                    AcqrrRefData: "12345678901",
-                    cardIssrRefData: JSON.stringify({
-                        "CARD-ID": document.getElementById('cardId').value,
-                        "ProcessorTransactionId": generatedProcessorTransactionId = generateRandomAlphaNumeric(64),
-                        "ProcessorTransactionIdCollection": [{
-                            "ProcessorTransactionId": document.getElementById('processorTransactionId').value,
-                            "MsgFctn": "REQU"
-                        }],
-                        "ProcessorLifeCycleId": document.getElementById('processorLifeCycleId').value
-                    }),
-                    LclDtTm: new Date().toISOString(),
-                    LifeCyclTracIdData: {
-                        Id: "001680722186868"
-                    },
-                    RtrvlRefNb: "765643377823",
-                    SysTracAudtNb: "265918",
-                    TrnsmssnDtTm: "2023-05-01T14:36:45Z"
-                },
-                TxTp: "00"
-            }
-        }
-    };
+                }
 
-    var authSettledata =
-    {
-        Hdr: {
-            MsgFctn: "ADVC",
-            PrtcolVrsn: "2.49.1",
-            InitgPty: {
-                Id: "VisaDPS"
-            },
-            CreDtTm: new Date().toISOString()
-        },
-        Body: {
-            Tx: {
-                TxTp: "00",
-                TxAmts: {
-                    TxAmt: {
-                        Amt: parseFloat(document.getElementById('amount').value),
-                        Ccy: "840"
+            }
+            break;
+        case "reversal":
+            var reversaldata = {
+                Hdr: {
+                    MsgFctn: "ADVC",
+                    PrtcolVrsn: "2.49.1",
+                    InitgPty: {
+                        Id: "VisaDPS"
                     },
-                    CrdhldrBllgAmt: {
-                        Amt: parseFloat(document.getElementById('amount').value),
-                        XchgRate: 1,
-                        Ccy: "840"
+                    CreDtTm: new Date().toISOString()
+                },
+                Body: {
+                    Tx: {
+                        TxTp: "22",
+                        TxAmts: {
+                            TxAmt: {
+                                Amt: parseFloat(document.getElementById('amount').value),
+                                Ccy: "840"
+                            },
+                            CrdhldrBllgAmt: {
+                                Amt: parseFloat(document.getElementById('amount').value),
+                                XchgRate: 1,
+                                Ccy: "840"
+                            }
+                        },
+                        TxId: {
+                            SysTracAudtNb: "000007",
+                            LclDtTm: new Date().toISOString(),
+                            RtrvlRefNb: "765643377823",
+                            cardIssrRefData: JSON.stringify({
+                                "CARD-ID": document.getElementById('cardId').value,
+                                "ProcessorTransactionId": generatedProcessorTransactionId = generateRandomAlphaNumeric(64),
+                                "ProcessorTransactionIdCollection": [{
+                                    "ProcessorTransactionId": document.getElementById('parentProcessorTransactionId').value,
+                                    "MsgFctn": "REQU"
+                                }],
+                                "ProcessorLifeCycleId": document.getElementById('parentProcessorLifeCycleId').value
+                            }),
+                        },
+                        AltrnMsgRsn: [
+                            "2800"
+                        ]
+                    },
+                    Cntxt: {
+                        TxCntxt: {
+                            MrchntCtgyCd: "5999"
+                        }
+                    },
+                    Envt: {
+                        Accptr: {
+                            NmAndLctn: "BUCKS OF STAR TEA      DENVER       COUS"
+                        },
+                        Acqrr: {
+                            Id: "59000000204"
+                        }
+                    },
+                    PrcgRslt: {
+                        RsltData: {
+                            RsltDtls: "00"
+                        }
                     }
-                },
-                TxId: {
-                    SysTracAudtNb: "000006",
-                    LclDtTm: new Date().toISOString(),
-                    RtrvlRefNb: "765643377823",
-                    cardIssrRefData: JSON.stringify({
-                        "CARD-ID": document.getElementById('cardId').value,
-                        "ProcessorTransactionId": generatedProcessorTransactionId = generateRandomAlphaNumeric(64),
-                        "ProcessorTransactionIdCollection": [{
-                            "ProcessorTransactionId": document.getElementById('processorTransactionId').value,
-                            "MsgFctn": "REQU"
-                        }],
-                        "ProcessorLifeCycleId": document.getElementById('processorLifeCycleId').value
-                    }),
-                },
-                AltrnMsgRsn: [
-                    "0029"
-                ]
-            },
-            Cntxt: {
-                TxCntxt: {
-                    MrchntCtgyCd: "5999"
-                }
-            },
-            Envt: {
-                Accptr: {
-                    NmAndLctn: "BUCKS OF STAR TEA      DENVER       COUS"
-                },
-                Acqrr: {
-                    Id: "59000000204"
-                }
-            },
-            PrcgRslt: {
-                RsltData: {
-                    RsltDtls: "00"
                 }
             }
-        }
-
-    }
-    var reversaldata = {
-        Hdr: {
-            MsgFctn: "ADVC",
-            PrtcolVrsn: "2.49.1",
-            InitgPty: {
-                Id: "VisaDPS"
-            },
-            CreDtTm: new Date().toISOString()
-        },
-        Body: {
-            Tx: {
-                TxTp: "22",
-                TxAmts: {
-                    TxAmt: {
-                        Amt: parseFloat(document.getElementById('amount').value),
-                        Ccy: "840"
+            break;
+        case "refund":
+            var refunddata = {
+                Hdr: {
+                    MsgFctn: "ADVC",
+                    PrtcolVrsn: "2.49.1",
+                    InitgPty: {
+                        Id: "VisaDPS"
                     },
-                    CrdhldrBllgAmt: {
-                        Amt: parseFloat(document.getElementById('amount').value),
-                        XchgRate: 1,
-                        Ccy: "840"
+                    CreDtTm: new Date().toISOString()
+                },
+                Body: {
+                    Tx: {
+                        TxTp: "20",
+                        TxAmts: {
+                            TxAmt: {
+                                Amt: parseFloat(document.getElementById('amount').value),
+                                Ccy: "840"
+                            },
+                            CrdhldrBllgAmt: {
+                                Amt: parseFloat(document.getElementById('amount').value),
+                                XchgRate: 1,
+                                Ccy: "840"
+                            }
+                        },
+                        TxId: {
+                            SysTracAudtNb: "000007",
+                            LclDtTm: new Date().toISOString(),
+                            RtrvlRefNb: "765643377823",
+                            cardIssrRefData: JSON.stringify({
+                                "CARD-ID": document.getElementById('cardId').value,
+                                "ProcessorTransactionId": generatedProcessorTransactionId = generateRandomAlphaNumeric(64),
+                                "ProcessorTransactionIdCollection": [{
+                                    "ProcessorTransactionId": document.getElementById('parentProcessorTransactionId').value,
+                                    "MsgFctn": "REQU"
+                                }],
+                                "ProcessorLifeCycleId": document.getElementById('parentProcessorLifeCycleId').value
+                            }),
+                        },
+                        AltrnMsgRsn: [
+                            "2800"
+                        ]
+                    },
+                    Cntxt: {
+                        TxCntxt: {
+                            MrchntCtgyCd: "5999"
+                        }
+                    },
+                    Envt: {
+                        Accptr: {
+                            NmAndLctn: "BUCKS OF STAR TEA      DENVER       COUS"
+                        },
+                        Acqrr: {
+                            Id: "59000000204"
+                        }
+                    },
+                    PrcgRslt: {
+                        RsltData: {
+                            RsltDtls: "00"
+                        }
                     }
-                },
-                TxId: {
-                    SysTracAudtNb: "000007",
-                    LclDtTm: new Date().toISOString(),
-                    RtrvlRefNb: "765643377823",
-                    cardIssrRefData: JSON.stringify({
-                        "CARD-ID": document.getElementById('cardId').value,
-                        "ProcessorTransactionId": generatedProcessorTransactionId = generateRandomAlphaNumeric(64),
-                        "ProcessorTransactionIdCollection": [{
-                            "ProcessorTransactionId": document.getElementById('processorTransactionId').value,
-                            "MsgFctn": "REQU"
-                        }],
-                        "ProcessorLifeCycleId": document.getElementById('processorLifeCycleId').value
-                    }),
-                },
-                AltrnMsgRsn: [
-                    "2800"
-                ]
-            },
-            Cntxt: {
-                TxCntxt: {
-                    MrchntCtgyCd: "5999"
-                }
-            },
-            Envt: {
-                Accptr: {
-                    NmAndLctn: "BUCKS OF STAR TEA      DENVER       COUS"
-                },
-                Acqrr: {
-                    Id: "59000000204"
-                }
-            },
-            PrcgRslt: {
-                RsltData: {
-                    RsltDtls: "00"
                 }
             }
         }
+            // Send data to API
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", BaseUrl + apiUrl, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    displayResponse(response);
+                } else {
+                    displayErrorResponse(xhr.status);
+                }
+            };
+            console.log("ProcessorTransactionId" + generatedProcessorTransactionId)
+            //Pass the RequestPayload based on TxnType
+            if (selectedTransactionType == "balanceInquiry")
+                xhr.send(JSON.stringify(balanceInquirydata));
+            else if (selectedTransactionType == "auth")
+                xhr.send(JSON.stringify(authdata));
+            else if (selectedTransactionType == "authUpdate")
+                xhr.send(JSON.stringify(authUpdatedata));
+            else if (selectedTransactionType == "settlement")
+                xhr.send(JSON.stringify(authSettledata));
+            else if (selectedTransactionType == "reversal")
+                xhr.send(JSON.stringify(reversaldata));
+            else if (selectedTransactionType == "refund")
+                xhr.send(JSON.stringify(refunddata));
+
     }
 
-    var refunddata = {
-        Hdr: {
-            MsgFctn: "ADVC",
-            PrtcolVrsn: "2.49.1",
-            InitgPty: {
-                Id: "VisaDPS"
-            },
-            CreDtTm: new Date().toISOString()
-        },
-        Body: {
-            Tx: {
-                TxTp: "20",
-                TxAmts: {
-                    TxAmt: {
-                        Amt: parseFloat(document.getElementById('amount').value),
-                        Ccy: "840"
-                    },
-                    CrdhldrBllgAmt: {
-                        Amt: parseFloat(document.getElementById('amount').value),
-                        XchgRate: 1,
-                        Ccy: "840"
-                    }
-                },
-                TxId: {
-                    SysTracAudtNb: "000007",
-                    LclDtTm: new Date().toISOString(),
-                    RtrvlRefNb: "765643377823",
-                    cardIssrRefData: JSON.stringify({
-                        "CARD-ID": document.getElementById('cardId').value,
-                        "ProcessorTransactionId": generatedProcessorTransactionId = generateRandomAlphaNumeric(64),
-                        "ProcessorTransactionIdCollection": [{
-                            "ProcessorTransactionId": document.getElementById('processorTransactionId').value,
-                            "MsgFctn": "REQU"
-                        }],
-                        "ProcessorLifeCycleId": document.getElementById('processorLifeCycleId').value
-                    }),
-                },
-                AltrnMsgRsn: [
-                    "2800"
-                ]
-            },
-            Cntxt: {
-                TxCntxt: {
-                    MrchntCtgyCd: "5999"
-                }
-            },
-            Envt: {
-                Accptr: {
-                    NmAndLctn: "BUCKS OF STAR TEA      DENVER       COUS"
-                },
-                Acqrr: {
-                    Id: "59000000204"
-                }
-            },
-            PrcgRslt: {
-                RsltData: {
-                    RsltDtls: "00"
-                }
-            }
+    // DISPLAY RESPONSE FUNCTION
+    function displayResponse(response) {
+        var responseText = "Transaction Response Code: " + response.Body.PrcgRslt.RsltData.RsltDtls + "<br>";
+
+        if (document.getElementById('txnType').value == "balanceInquiry") {
+            console.log(document.getElementById('txnType').value)
+            responseText += "Available Balance: " + response.Body.Tx.AcctBal[0].Bal[0].Amt + " USD" + "<br>";
         }
-    }
-
-    // Send data to API
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", BaseUrl + apiUrl, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            var response = JSON.parse(xhr.responseText);
-            displayResponse(response);
-        } else {
-            displayErrorResponse(xhr.status);
+        else if (document.getElementById('txnType').value == "auth" || document.getElementById('txnType').value == "authUpdate") {
+            responseText += "ProcessorTransactionId: " + generatedProcessorTransactionId + "<br>";
+            responseText += "ProcessorLifeCycleId: " + generatedProcessorLifeCycleId + "<br>";
+            document.getElementById('parentProcessorTransactionId').value=generatedProcessorTransactionId;
+            document.getElementById('parentProcessorLifeCycleId').value=generatedProcessorLifeCycleId;
         }
-    };
-    //Pass the RequestPayload based on TxnType
-    if (selectedTransactionType == "balanceInquiry")
-        xhr.send(JSON.stringify(balanceInquirydata));
-    else if (selectedTransactionType == "auth")
-        xhr.send(JSON.stringify(authdata));
-    else if (selectedTransactionType == "authUpdate")
-        xhr.send(JSON.stringify(authUpdatedata));
-    else if (selectedTransactionType == "settlement")
-        xhr.send(JSON.stringify(authSettledata));
-    else if (selectedTransactionType == "reversal")
-        xhr.send(JSON.stringify(reversaldata));
-    else if (selectedTransactionType == "refund")
-        xhr.send(JSON.stringify(refunddata));
-
-}
-
-// DISPLAY RESPONSE FUNCTION
-function displayResponse(response) {
-    var responseText = "Transaction Response Code: " + response.Body.PrcgRslt.RsltData.RsltDtls + "<br>";
-
-    if (document.getElementById('txnType').value == "balanceInquiry") {
-        console.log(document.getElementById('txnType').value)
-        responseText += "Available Balance: " + response.Body.Tx.AcctBal[0].Bal[0].Amt + " USD" + "<br>";
+        else {
+            responseText += "ProcessorTransactionId: " + generatedProcessorTransactionId + "<br>";
+        }
+        document.getElementById('responseText').innerHTML = responseText;
+        document.getElementById('responseContainer').style.display = 'block';
     }
-    else if (document.getElementById('txnType').value == "auth") {
-        responseText += "ProcessorTransactionId: " + generatedProcessorTransactionId + "<br>";
-        responseText += "ProcessorLifeCycleId: " + generatedProcessorLifeCycleId + "<br>";
+
+
+    // DISPLAY Error FUNCTION
+    function displayErrorResponse(status) {
+        // Display error response in the response container
+        if (status == 500)
+            var errorText = "Error: Internal Server Error (500)";
+        else
+            var errorText = "Error: " + status;
+
+        document.getElementById('responseText').innerHTML = errorText;
+        document.getElementById('responseContainer').style.display = 'block';
     }
-    else {
-        responseText += "ProcessorTransactionId: " + generatedProcessorTransactionId + "<br>";
-    }
-    document.getElementById('responseText').innerHTML = responseText;
-    document.getElementById('responseContainer').style.display = 'block';
-}
-
-
-// DISPLAY Error FUNCTION
-function displayErrorResponse(status) {
-    // Display error response in the response container
-    if (status == 500)
-        var errorText = "Error: Internal Server Error (500)";
-    else
-        var errorText = "Error: " + status;
-
-    document.getElementById('responseText').innerHTML = errorText;
-    document.getElementById('responseContainer').style.display = 'block';
-}
